@@ -1,0 +1,21 @@
+ENTITY RELATIONSHIP DIAGRAM IN TEXT
+
+user-service{
+
+    users{
+
+    }
+
+    authorities{
+
+    }
+
+    forgot_password{
+
+    }
+
+    otps{
+
+    }
+
+}

@@ -1,0 +1,18 @@
+DOCKER COMMAND FOR MYSQL CONTAINER
+docker run --name Microservices_API --hostname 127.0.0.1 --publish 3301:3306 --env MYSQL_ROOT_PASSWORD=Microservices_API_Password --detach mysql:8-oracle
+
+
+MYSQL WORKBENCH CONNECTION WITH MYSQL DOCKER CONTAINER
+- Connection Name: Docker_Microservices_API
+- hostname: 127.0.0.1
+- port: 3301:3306 // url_port:mysql_port
+- username: root
+- password: Microservices_API_Password
+- Default Schema (DB Name): null
+
+
+APPLICATION PROPERTIES FILE
+# MYSQL DATABSE CONFIG
+spring.datasource.url=jdbc:mysql://localhost:3301/OrderService_DB
+spring.datasource.username=root
+spring.datasource.password=Microservices_API_Password

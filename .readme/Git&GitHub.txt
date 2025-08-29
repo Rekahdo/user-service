@@ -1,0 +1,53 @@
+LOCAL REPOSITORY
+- Add Git to project
+    - git init
+
+- Rename the default branch called 'master' to 'main' (Recommended)
+    - git branch -m main
+    'main' branch is the current branch
+
+- Add all files to current branch
+    - git add .
+
+- Commit/save the current branch
+    - git commit -m "first commit"
+    -m means message
+
+- View commits in current branch
+    - git log
+    Please q on keyboard to exit git log
+
+- View uncommitted files in current branch
+    - git status
+
+- Switch to a commit in the current branch
+    - git checkout 'Enter commit hash. Run git log and copy the commit hash'
+
+- Add a new branch to current branch
+    - git branch user
+
+- Add a new branch to the new branch 'user' in the 'main' branch
+    - git branch userController user
+
+- Toggle to an existing branch
+    - git checkout branch-name
+
+- Create a branch and switch to branch at once
+    - git checkout -b branch-name
+
+- Merge 2 branches.
+    Switch to the branch you want to modify
+    - git checkout branch-with-code-error
+    - git merge branch-with-code-fixed
+
+- Remove last commit
+    - git reset --hard HEAD~1
+
+
+
+
+
+
+ONLINE / CENTRAL REPOSITORY
+1. Add repository and give it a name
+    - git remote add origin
