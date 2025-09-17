@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageConversionException;
 import org.springframework.orm.jpa.JpaSystemException;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.WebRequest;
@@ -63,6 +64,12 @@ public class Api_ExceptionHandler {
     @ExceptionHandler(MethodNotAllowedException.class)
     public ResponseEntity<?> handleMethodNotAllowedException(MethodNotAllowedException ex, WebRequest request) {
         ErrorResponse errorResponse = new ErrorResponse(ex, HttpStatus.INTERNAL_SERVER_ERROR, request);
+        return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse.fetchMJV());
+    }
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleAccessDeniedException(AccessDeniedException ex, WebRequest request) {
+        ErrorResponse errorResponse = new ErrorResponse(ex, HttpStatus.UNAUTHORIZED, request);
         return ResponseEntity.status(errorResponse.getStatus()).body(errorResponse.fetchMJV());
     }
 

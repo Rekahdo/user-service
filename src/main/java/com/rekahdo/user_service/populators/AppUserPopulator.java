@@ -1,7 +1,7 @@
 package com.rekahdo.user_service.populators;
 
-import com.rekahdo.user_service.dtos.records.CreateAccount;
-import com.rekahdo.user_service.dtos.records.EditAccount;
+import com.rekahdo.user_service.dtos.records.CreateUser;
+import com.rekahdo.user_service.dtos.records.EditUser;
 import com.rekahdo.user_service.repositories.AppUserRepository;
 import com.rekahdo.user_service.services.AppUserService;
 import jakarta.annotation.PostConstruct;
@@ -18,19 +18,19 @@ public class AppUserPopulator {
     private final AppUserService service;
 
     @PostConstruct
-    private void insertIntoRepository() {
+    private void insert() {
         if (!repository.findAll().isEmpty())
             return;
 
-        service.createAccount(new CreateAccount("rekahdo", "pass"));
-        service.createAccount(new CreateAccount("john", "pass"));
-        service.createAccount(new CreateAccount("mary", "pass"));
-        service.createAccount(new CreateAccount("peter", "pass"));
-        service.createAccount(new CreateAccount("james", "pass"));
+        service.createUser(new CreateUser("rekahdo", "Passcode@1"));
+        service.createUser(new CreateUser("john", "Passcode@1"));
+        service.createUser(new CreateUser("mary", "Passcode@1"));
+        service.createUser(new CreateUser("peter", "Passcode@1"));
+        service.createUser(new CreateUser("james", "Passcode@1"));
 
-        service.editAccount(1L, new EditAccount(null, null, "okaforrichard76@gmail.com"));
-        service.editAccount(2L, new EditAccount(null, null, "johnokafor@gmail.com"));
-        service.editAccount(3L, new EditAccount(null, null, "marynwankwo@gmail.com"));
+        service.editUser(1L, new EditUser(null, null, "okaforrichard76@gmail.com"));
+        service.editUser(2L, new EditUser(null, null, "johnokafor@gmail.com"));
+        service.editUser(3L, new EditUser(null, null, "marynwankwo@gmail.com"));
     }
 
 }

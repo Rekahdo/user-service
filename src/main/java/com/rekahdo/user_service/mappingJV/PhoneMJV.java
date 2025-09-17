@@ -8,8 +8,12 @@ import org.springframework.stereotype.Component;
 public final class PhoneMJV extends MJV{
 
 	public PhoneMJV() {
+		LIST_FILTER = new SimpleFilterProvider()
+				.addFilter("phoneDtoFilter",
+						SimpleBeanPropertyFilter.filterOutAllExcept("id", "phoneNumber", "links"));
+
 		SELF = new SimpleFilterProvider()
-				.addFilter("phoneDtoFilter", SimpleBeanPropertyFilter.serializeAllExcept());
+				.addFilter("phoneDtoFilter", SimpleBeanPropertyFilter.serializeAll());
 	}
 
 }

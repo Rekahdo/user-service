@@ -6,7 +6,7 @@ import org.mapstruct.*;
 
 import java.util.List;
 
-public interface Api_Mapper<ENTITY, DTO extends Dto> {
+public interface Api_Mapper<ENTITY, DTO> {
 
 	DTO toDto(ENTITY entity);
 	ENTITY toEntity(DTO dto);

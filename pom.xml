@@ -32,7 +32,6 @@
 	</properties>
 
 	<dependencies>
-
 		<!-- WEB COMMUNICATION -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -50,11 +49,11 @@
 			<artifactId>spring-cloud-starter-openfeign</artifactId>
 		</dependency>
 
-		<!-- SPRING SECURITY
+		<!-- SPRING SECURITY -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<!-- JWT WITH OAUTH
 		<dependency>
@@ -68,7 +67,7 @@
 			<artifactId>spring-security-oauth2-client</artifactId>
 		</dependency> -->
 
-		<!-- JWT
+		<!-- JJWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
 			<artifactId>jjwt-api</artifactId>
@@ -87,7 +86,7 @@
 			<artifactId>jjwt-jackson</artifactId>
 			<version>0.12.6</version>
 			<scope>runtime</scope>
-		</dependency> -->
+		</dependency>
 
 		<!-- AUTO RELOAD
 		<dependency>
@@ -117,11 +116,11 @@
 			<scope>runtime</scope>
 		</dependency>
 
-		<!-- FLYWAY MIGRATION - WORKING WITH MYSQL DDL SCRIPTS
+		<!-- FLYWAY MIGRATION - WORKING WITH MYSQL DDL SCRIPTS -->
 		<dependency>
 			<groupId>org.flywaydb</groupId>
 			<artifactId>flyway-mysql</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<!-- FIELD VALIDATION -->
 		<dependency>

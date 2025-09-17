@@ -1,7 +1,5 @@
 package com.rekahdo.user_service.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.rekahdo.user_service.enums.OTPPurpose;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -20,7 +18,9 @@ public class Otp {
 
 	private Integer otp;
 
-	private Integer purpose;
+	private String purpose;
+
+	private String sentTo;
 
 	private boolean verified;
 

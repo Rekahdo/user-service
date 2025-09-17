@@ -18,7 +18,7 @@ public class AppUserDto extends EntityDto<AppUserDto> {
 
 	private String email;
 
-	private boolean emailVerified;
+	private boolean verified;
 
 	private LocalDate createdAt;
 

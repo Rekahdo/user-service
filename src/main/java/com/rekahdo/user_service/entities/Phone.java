@@ -25,4 +25,8 @@ public class Phone {
     @JoinColumn(name = "user_id")
     private AppUser appUser;
 
+    public String phoneNumber() {
+        return String.format("%s%s", countryCode, number);
+    }
+
 }

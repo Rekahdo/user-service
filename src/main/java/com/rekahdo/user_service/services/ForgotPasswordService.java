@@ -1,58 +1,40 @@
 package com.rekahdo.user_service.services;
 
-import com.rekahdo.user_service.dtos.entities.AppUserDto;
-import com.rekahdo.user_service.dtos.records.FindAccount;
 import com.rekahdo.user_service.dtos.records.ResetPassword;
-import com.rekahdo.user_service.dtos.records.SendOtp;
-import com.rekahdo.user_service.dtos.records.VerifyOtp;
-import com.rekahdo.user_service.entities.AppUser;
-import com.rekahdo.user_service.enums.FindBy;
-import com.rekahdo.user_service.exceptions.classes.UserNotFoundException;
-import com.rekahdo.user_service.mappers.AppUserMapper;
-import com.rekahdo.user_service.mappingJV.FindAccountMJV;
+import com.rekahdo.user_service.entities.Otp;
+import com.rekahdo.user_service.enums.OTPPurpose;
+import com.rekahdo.user_service.mappers.OtpMapper;
 import com.rekahdo.user_service.repositories.AppUserRepository;
-import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
+import com.rekahdo.user_service.repositories.OtpRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ForgotPasswordService {
 
     private final AppUserRepository appUserRepository;
-    private final AppUserMapper appUserMapper;
 
-    private final FindAccountMJV findAccountMJV;
+    private final OtpMapper otpMapper;
+    private final OtpService otpService;
+    private final OtpRepository otpRepository;
 
-    public MappingJacksonValue findAccount(FindAccount record) {
-        List<AppUser> appUsers = record.findBy().equals(FindBy.EMAIL)
-                ? appUserRepository.findByEmail(record.value())
-                : appUserRepository.findByPhoneNumber(record.value());
-        if(appUsers.isEmpty() && record.findBy().equals(FindBy.EMAIL))
-            throw new UserNotFoundException("email", record.value());
-        else if(appUsers.isEmpty() && record.findBy().equals(FindBy.PHONE))
-            throw new UserNotFoundException("phone", record.value());
-
-        List<AppUserDto> appUserDtos = appUserMapper.toDtoList(appUsers);
-        return findAccountMJV.listFilter(appUserDtos);
-    }
-
-    public void sendOTP(SendOtp record) {
-    }
-
-    public void verifyOTP(VerifyOtp record) {
-    }
+    private final PasswordEncoder passwordEncoder;
 
     public void resetPassword(ResetPassword record) {
+        Otp otp = otpService.validate(record.otp(), OTPPurpose.FORGOT_PASSWORD);
+
+        if(!Objects.equals(record.password(), record.repeatPassword()))
+            throw new ResponseStatusException(HttpStatus.EXPECTATION_FAILED, "'repeatPassword' does not match 'password'");
+
+        String encodedPassword = passwordEncoder.encode(record.repeatPassword());
+        appUserRepository.updatePassword(encodedPassword, otp.getAppUser().getId());
+        otpRepository.deleteByOtp(otp.getOtp());
     }
+
 }

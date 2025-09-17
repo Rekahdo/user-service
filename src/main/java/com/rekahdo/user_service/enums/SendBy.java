@@ -10,8 +10,7 @@ import java.util.Optional;
 public enum SendBy {
 
 	EMAIL(0),
-	PHONE(1),
-	WHATSAPP(1);
+	PHONE(1);
 
 	public final Integer index;
 

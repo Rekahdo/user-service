@@ -9,22 +9,24 @@ import java.util.Optional;
 @Getter
 public enum OTPPurpose {
 
-    FORGOT_PASSWORD_BY_EMAIL(1),
-    FORGOT_PASSWORD_BY_PHONE(2),
-	VERIFY_BY_NUMBER(3),
-	VERIFY_BY_EMAIL(4);
+    EMAIL_VERIFICATION("EV", "Email Verification"),
+    NUMBER_VERIFICATION("PNV", "Phone Number Verification"),
+    FORGOT_PASSWORD("FP", "Forgot Password Verification");
 
-    public final Integer index;
+    public final String purpose;
+    public final String title;
 
-    OTPPurpose(Integer index) {
-        this.index = index;
+    OTPPurpose(String purpose, String title) {
+        this.purpose = purpose;
+        this.title = title;
     }
 
-    public static OTPPurpose findByIndex(Integer index){
+    public static OTPPurpose findByPurpose(String purpose){
         Optional<OTPPurpose> optional = Arrays.stream(OTPPurpose.values())
-                .filter(value -> Objects.equals(value.getIndex(), index))
+                .filter(otpPurpose -> Objects.equals(otpPurpose.purpose, purpose))
                 .findFirst();
         return optional.orElse(null);
     }
+
 
 }

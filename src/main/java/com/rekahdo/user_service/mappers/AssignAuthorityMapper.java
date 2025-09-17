@@ -15,4 +15,5 @@ public interface AssignAuthorityMapper extends Api_Mapper<Authority, AssignAutho
 	default void afterMappingToEntity(@MappingTarget Authority target, AssignAuthority source) {
 		target.setRole(source.role().getIndex());
 	}
+
 }

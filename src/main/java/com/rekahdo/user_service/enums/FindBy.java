@@ -10,7 +10,7 @@ import java.util.Optional;
 public enum FindBy {
 
 	EMAIL(0),
-	PHONE(1);
+	NUMBER(1);
 
 	public final Integer index;
 

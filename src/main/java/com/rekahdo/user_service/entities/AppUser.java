@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -25,8 +27,7 @@ public class AppUser {
 	@Column(unique = true)
 	private String email;
 
-	private boolean emailVerified;
-
+	private boolean verified;
 	private Long profileId;
 
 	@Column(nullable = false)
@@ -34,11 +35,11 @@ public class AppUser {
 
 	private LocalDate updatedAt;
 
-	@OneToOne(mappedBy = "appUser")
-	private Authority authority;
+	@OneToMany(mappedBy = "appUser")
+	private List<Phone> phones;
 
-	@OneToOne(mappedBy = "appUser")
-	private Phone phone;
+	@OneToOne(mappedBy = "appUser", orphanRemoval = true)
+	private Authority authority;
 
 	@OneToOne(mappedBy = "appUser", orphanRemoval = true)
 	private Otp otp;

@@ -3,29 +3,34 @@ package com.rekahdo.user_service.services;
 import com.rekahdo.user_service.controllers.AppUserController;
 import com.rekahdo.user_service.dtos.entities.AppUserDto;
 import com.rekahdo.user_service.dtos.paginations.AppUserPageRequestDto;
-import com.rekahdo.user_service.dtos.records.CreateAccount;
-import com.rekahdo.user_service.dtos.records.EditAccount;
-import com.rekahdo.user_service.dtos.records.LoginAccount;
+import com.rekahdo.user_service.dtos.records.CreateUser;
+import com.rekahdo.user_service.dtos.records.EditUser;
+import com.rekahdo.user_service.dtos.records.JJwtResponse;
+import com.rekahdo.user_service.dtos.records.Login;
 import com.rekahdo.user_service.entities.AppUser;
 import com.rekahdo.user_service.exceptions.classes.UserNotFoundException;
 import com.rekahdo.user_service.exceptions.classes.UsernameExistsException;
 import com.rekahdo.user_service.mappers.AppUserMapper;
-import com.rekahdo.user_service.mappers.CreateAccountMapper;
-import com.rekahdo.user_service.mappers.EditAccountMapper;
+import com.rekahdo.user_service.mappers.CreateUserMapper;
+import com.rekahdo.user_service.mappers.EditUserMapper;
 import com.rekahdo.user_service.mappingJV.AppUserMJV;
 import com.rekahdo.user_service.repositories.AppUserRepository;
-import jakarta.validation.Valid;
+import com.rekahdo.user_service.repositories.PhoneRepository;
+import com.rekahdo.user_service.security.jjwt.JwtSymmetricService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
@@ -36,42 +41,56 @@ public class AppUserService {
     private final AppUserMapper mapper;
     private final AppUserMJV mjv;
 
-    private final CreateAccountMapper createAccountMapper;
-    private final EditAccountMapper editAccountMapper;
+    private final CreateUserMapper createUserMapper;
+    private final EditUserMapper editUserMapper;
 
     private final PasswordEncoder passwordEncoder;
 
-    public void createAccount(CreateAccount record) {
-        if(repository.existsByUsername(record.username()))
+    private final PhoneRepository phoneRepository;
+    private final AuthenticationManager authenticationManager;
+    private final JwtSymmetricService jwtService;
+
+    public void createUser(CreateUser record) {
+        if(repository.existsByUsernameIgnoreCase(record.username()))
             throw new UsernameExistsException(record.username());
 
-        AppUser user = createAccountMapper.toEntity(record);
+        AppUser user = createUserMapper.toEntity(record);
         user.setPassword(passwordEncoder.encode(record.password()));
         repository.save(user);
     }
 
-    public void loginAccount(LoginAccount record) {
+    public ResponseEntity<JJwtResponse> login(Login record) {
+        Authentication usernamePassword = new UsernamePasswordAuthenticationToken(
+                record.username(), record.password());
 
+        Authentication authentication = authenticationManager.authenticate(usernamePassword);
+        JJwtResponse jJwtResponse = jwtService.createToken(authentication);
+        return ResponseEntity.ok(jJwtResponse);
     }
 
-    public void editAccount(Long userId, EditAccount record) {
+    public void editUser(Long userId, EditUser record) {
         AppUser appUser = repository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
-        editAccountMapper.updateEntity(record, appUser);
-        appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
+        editUserMapper.updateEntity(record, appUser);
+        if(record.password() != null)
+            appUser.setPassword(passwordEncoder.encode(appUser.getPassword()));
         repository.save(appUser);
     }
 
-    public MappingJacksonValue getAccounts(AppUserPageRequestDto dto) {
+    public MappingJacksonValue getUsers(AppUserPageRequestDto dto) {
         Page<AppUser> appUserPage = repository.findAll(dto.getPageable());
 
-        Page<AppUserDto> appUserDtoPage = appUserPage.map(mapper::toDto);
-        PagedModel<AppUserDto> pagedModel = dto.getPagedModel(appUserDtoPage, methodOn(AppUserController.class).getAccounts(null));
+        Page<AppUserDto> appUserDtoPage = appUserPage.map(appUser -> {
+            AppUserDto appUserDto = mapper.toDto(appUser);
+            appUserDto.add(linkTo(methodOn(AppUserController.class).getUser(appUser.getId())).withSelfRel());
+            return appUserDto;
+        });
+        PagedModel<AppUserDto> pagedModel = dto.getPagedModel(appUserDtoPage, methodOn(AppUserController.class).getUsers(dto));
         return mjv.listFilter(pagedModel);
     }
 
-    public MappingJacksonValue getAccount(Long userId) {
+    public MappingJacksonValue getUser(Long userId) {
         AppUser appUser = repository.findById(userId)
                 .orElseThrow(() -> new UserNotFoundException(userId));
 
@@ -79,11 +98,11 @@ public class AppUserService {
         return mjv.selfFilter(dto);
     }
 
-    public void deleteAccounts(List<Long> userIds) {
+    public void deleteUsers(List<Long> userIds) {
         repository.deleteAllById(userIds);
     }
 
-    public void deleteAccount(Long userId) {
+    public void deleteUser(Long userId) {
         repository.deleteById(userId);
     }
 
