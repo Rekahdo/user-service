@@ -1,7 +1,6 @@
 package com.rekahdo.user_service.controllers;
 
 import com.rekahdo.user_service.dtos.records.*;
-import com.rekahdo.user_service.enums.FindBy;
 import com.rekahdo.user_service.services.AccountService;
 import com.rekahdo.user_service.validations.annotations.CountryCode;
 import com.rekahdo.user_service.validations.annotations.Number;
@@ -34,15 +33,13 @@ public class AccountController {
 		return service.findAccountByNumber(countryCode, number);
 	}
 
-	@PostMapping(path = "/verify-email", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("@userSecurity.isUserAuth(authentication, #record)")
+	@PostMapping(path = "/verify", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public void verifyEmail(@Valid @RequestBody VerifyEmail record) {
-		service.verifyEmail(record);
+	public void verifyAccount(@Valid @RequestBody VerifyAccount record) {
+		service.verifyAccount(record);
 	}
 
 	@PostMapping(path = "/verify-number", consumes = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("@userSecurity.isUserAuth(authentication, #record)")
 	@ResponseStatus(HttpStatus.OK)
 	public void verifyNumber(@Valid @RequestBody VerifyNumber record) {
 		service.verifyNumber(record);

@@ -30,8 +30,14 @@ public interface PhoneRepository extends JpaRepository<Phone, Long> {
     void deleteAllByAppUserId(Long userId);
 
     @Modifying @Transactional
-    @Query("UPDATE Phone SET verified = true WHERE id = ?1 AND CONCAT(countryCode, number) = ?2")
-    void verifyUserPhoneNumber(Long userId, String phoneNumber);
+    @Query("UPDATE Phone SET verified = true WHERE appUser.id = ?1 AND CONCAT(countryCode, number) = ?2")
+    void verifyPhoneNumber(Long userId, String phoneNumber);
+
+    @Modifying @Transactional
+    @Query("UPDATE Phone SET verified = true WHERE appUser.id = ?1 AND countryCode = ?2 AND number = ?3")
+    void verifyPhoneNumber(Long userId, String countryCode, String number);
+
+    boolean existsByCountryCodeAndNumber(String countryCode, String number);
 
     boolean existsByAppUserIdAndCountryCodeAndNumber(Long userId, String countryCode, String number);
 }

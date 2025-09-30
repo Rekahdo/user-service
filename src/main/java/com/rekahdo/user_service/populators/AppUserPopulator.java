@@ -22,15 +22,17 @@ public class AppUserPopulator {
         if (!repository.findAll().isEmpty())
             return;
 
-        service.createUser(new CreateUser("rekahdo", "Passcode@1"));
-        service.createUser(new CreateUser("john", "Passcode@1"));
-        service.createUser(new CreateUser("mary", "Passcode@1"));
-        service.createUser(new CreateUser("peter", "Passcode@1"));
-        service.createUser(new CreateUser("james", "Passcode@1"));
+        service.createUser(new CreateUser("rekahdo", "Passcode@1", "okaforrichard76@gmail.com"));
+        service.createUser(new CreateUser("john", "Passcode@1", "johnokafor@gmail.com"));
+        service.createUser(new CreateUser("mary", "Passcode@1", "marynwankwo@gmail.com"));
+        service.createUser(new CreateUser("peter", "Passcode@1", "peterparker@gmail.com"));
+        service.createUser(new CreateUser("james", "Passcode@1", "jamesgaun@gmail.com"));
 
-        service.editUser(1L, new EditUser(null, null, "okaforrichard76@gmail.com"));
-        service.editUser(2L, new EditUser(null, null, "johnokafor@gmail.com"));
-        service.editUser(3L, new EditUser(null, null, "marynwankwo@gmail.com"));
+        repository.verifyAccount(1L);
+        repository.verifyAccount(2L);
+        repository.verifyAccount(3L);
+        repository.verifyAccount(4L);
+        repository.verifyAccount(5L);
     }
 
 }

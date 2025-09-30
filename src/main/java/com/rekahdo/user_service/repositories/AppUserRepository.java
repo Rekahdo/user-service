@@ -13,11 +13,16 @@ import java.util.Optional;
 @Repository
 public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
+    @Query("SELECT u FROM AppUser u WHERE LOWER(username) = LOWER(?1) OR LOWER(email) = LOWER(?1)")
+    Optional<AppUser> findByUsernameOrEmail(String usernameOrEmail);
+
+    List<AppUser> findByUsernameIgnoreCaseOrEmailIgnoreCase(String username, String email);
+
     Optional<AppUser> findByUsernameIgnoreCase(String username);
 
 	boolean existsByUsernameIgnoreCase(String username);
 
-    List<AppUser> findByEmail(String value);
+    Optional<AppUser> findByEmail(String value);
 
     @Query("SELECT u FROM AppUser u JOIN u.phones p WHERE u.id = ?1 AND CONCAT(p.countryCode, p.number) = ?2")
     Optional<AppUser> findByIdAndPhoneNumber(Long userId, String phoneNumber);
@@ -28,7 +33,11 @@ public interface AppUserRepository extends JpaRepository<AppUser, Long> {
 
     @Modifying @Transactional
     @Query("UPDATE AppUser SET verified = true WHERE id = ?1")
-    void verifyUserEmail(Long userId);
+    void verifyEmail(Long userId);
+
+    @Modifying @Transactional
+    @Query("UPDATE AppUser SET verified = true WHERE id = ?1")
+    void verifyAccount(Long userId);
 
     @Modifying @Transactional
     @Query("UPDATE AppUser SET password = ?1 WHERE id = ?2")

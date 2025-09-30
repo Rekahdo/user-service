@@ -72,4 +72,11 @@ public class AppUserController {
 		service.deleteUser(userId);
 	}
 
+	@PostMapping(path = "/test-messaging")
+	@PreAuthorize("@userSecurity.isUserAuth(authentication, #userId) OR hasRole('ADMIN')")
+	@ResponseStatus(HttpStatus.OK)
+	public void testMessaging(@PathVariable Long userId) {
+		service.deleteUser(userId);
+	}
+
 }

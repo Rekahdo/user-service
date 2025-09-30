@@ -9,9 +9,9 @@ import java.util.Optional;
 @Getter
 public enum OTPPurpose {
 
-    EMAIL_VERIFICATION("EV", "Email Verification"),
-    NUMBER_VERIFICATION("PNV", "Phone Number Verification"),
-    FORGOT_PASSWORD("FP", "Forgot Password Verification");
+    ACCOUNT_VERIFICATION("AV", "Account OTP Verification"),
+    NUMBER_VERIFICATION("NV", "Phone Number OTP Verification"),
+    FORGOT_PASSWORD("FP", "Forgot Password OTP Verification");
 
     public final String purpose;
     public final String title;

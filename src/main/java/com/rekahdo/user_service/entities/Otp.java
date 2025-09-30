@@ -30,4 +30,7 @@ public class Otp {
 	@JoinColumn(name = "user_id")
 	private AppUser appUser;
 
+	public boolean isExpired() {
+		return LocalDateTime.now().isAfter(expireAt);
+	}
 }

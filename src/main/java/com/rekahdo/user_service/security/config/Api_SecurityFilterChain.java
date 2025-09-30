@@ -32,8 +32,7 @@ public class Api_SecurityFilterChain {
                 .requestMatchers("/api/v*/users/login").permitAll()
                 .requestMatchers("/api/v*/otp/**").permitAll()
                 .requestMatchers("/api/v*/forgot-password/**").permitAll()
-                .requestMatchers("/api/v*/account/find-account/by-email").permitAll()
-                .requestMatchers("/api/v*/account/find-account/by-number").permitAll()
+                .requestMatchers("/api/v*/account/**").permitAll()
                 .anyRequest().authenticated());
 
         http.httpBasic(Customizer.withDefaults());

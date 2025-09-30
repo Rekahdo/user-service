@@ -33,6 +33,7 @@ public class PhonePopulator {
         service.addPhone(2L, new AddPhone("234", "9030340615"));
         service.addPhone(3L, new AddPhone("1", "8045649213"));
         service.addPhone(3L, new AddPhone("234", "9030340615"));
+        service.addPhone(3L, new AddPhone("234", "9097114626"));
 
         service.editPhone(1L, 1L, new EditPhone(null, "9097114626"));
         service.editPhone(1L, 1L, new EditPhone("234", null));

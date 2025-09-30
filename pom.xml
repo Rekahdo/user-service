@@ -155,11 +155,11 @@
 			<version>1.6.2</version>
 		</dependency>
 
-		<!-- THYMELEAF - REPLACEMENT FOR JSP
+		<!-- THYMELEAF - REPLACEMENT FOR JSP -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-thymeleaf</artifactId>
-		</dependency> -->
+		</dependency>
 
 		<!-- FOR LIVE UPDATE
 		<dependency>

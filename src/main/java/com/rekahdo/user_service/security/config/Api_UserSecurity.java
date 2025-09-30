@@ -1,11 +1,8 @@
 package com.rekahdo.user_service.security.config;
 
-import com.rekahdo.user_service.dtos.entities.AppUserDto;
-import com.rekahdo.user_service.dtos.records.VerifyEmail;
+import com.rekahdo.user_service.dtos.records.VerifyAccount;
 import com.rekahdo.user_service.dtos.records.VerifyNumber;
-import com.rekahdo.user_service.entities.AppUser;
 import com.rekahdo.user_service.entities.Phone;
-import com.rekahdo.user_service.repositories.AppUserRepository;
 import com.rekahdo.user_service.repositories.PhoneRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,7 +23,7 @@ public class Api_UserSecurity {
 		return Objects.equals(authId, id);
 	}
 
-	public boolean isUserAuth(Authentication authentication, VerifyEmail record) {
+	public boolean isUserAuth(Authentication authentication, VerifyAccount record) {
 		String email = ((Api_UserDetails) authentication.getPrincipal()).getEmail();
 		if(!Objects.equals(email, record.email())) throw new AccessDeniedException(String.format(
 					"Access denied because email '%s' does not belong to the authenticated user", record.email()));

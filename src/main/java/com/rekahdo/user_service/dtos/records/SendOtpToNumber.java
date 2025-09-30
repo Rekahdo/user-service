@@ -27,4 +27,8 @@ public record SendOtpToNumber(
                 return String.format("%s%s", countryCode, number);
         }
 
+        public String validPhoneNumber() {
+                return String.format("+%s%s", countryCode, number);
+        }
+
 }

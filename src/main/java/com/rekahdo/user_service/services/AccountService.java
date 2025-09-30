@@ -1,11 +1,12 @@
 package com.rekahdo.user_service.services;
 
 import com.rekahdo.user_service.dtos.entities.AppUserDto;
-import com.rekahdo.user_service.dtos.records.VerifyEmail;
+import com.rekahdo.user_service.dtos.records.VerifyAccount;
 import com.rekahdo.user_service.dtos.records.VerifyNumber;
 import com.rekahdo.user_service.entities.AppUser;
 import com.rekahdo.user_service.entities.Otp;
 import com.rekahdo.user_service.enums.OTPPurpose;
+import com.rekahdo.user_service.exceptions.classes.AccountNotFoundException;
 import com.rekahdo.user_service.exceptions.classes.UserNotFoundException;
 import com.rekahdo.user_service.mappers.AppUserMapper;
 import com.rekahdo.user_service.mappers.OtpMapper;
@@ -14,13 +15,10 @@ import com.rekahdo.user_service.repositories.AppUserRepository;
 import com.rekahdo.user_service.repositories.OtpRepository;
 import com.rekahdo.user_service.repositories.PhoneRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -36,12 +34,11 @@ public class AccountService {
     private final AppUserMapper appUserMapper;
 
     public MappingJacksonValue findAccountByEmail(String email) {
-        List<AppUser> appUsers = appUserRepository.findByEmail(email);
-        if(appUsers.isEmpty())
-            throw new UserNotFoundException("email", email);
+        AppUser appUsers = appUserRepository.findByEmail(email)
+                .orElseThrow(() -> new AccountNotFoundException(email));;
 
-        List<AppUserDto> appUserDtos = appUserMapper.toDtoList(appUsers);
-        return findAccountMJV.listFilter(appUserDtos);
+        AppUserDto appUserDto = appUserMapper.toDto(appUsers);
+        return findAccountMJV.selfFilter(appUserDto);
     }
 
     public MappingJacksonValue findAccountByNumber(String countryCode, String number) {
@@ -54,15 +51,15 @@ public class AccountService {
         return findAccountMJV.listFilter(appUserDtos);
     }
 
-    public void verifyEmail(VerifyEmail record) {
-        Otp otp = otpService.validate(record.otp(), OTPPurpose.EMAIL_VERIFICATION);
-        appUserRepository.verifyUserEmail(otp.getAppUser().getId());
+    public void verifyAccount(VerifyAccount record) {
+        Otp otp = otpService.validate(record.otp(), OTPPurpose.ACCOUNT_VERIFICATION);
+        appUserRepository.verifyAccount(otp.getAppUser().getId());
         otpRepository.deleteByOtp(otp.getOtp());
     }
 
     public void verifyNumber(VerifyNumber record) {
         Otp otp = otpService.validate(record.otp(), OTPPurpose.NUMBER_VERIFICATION);
-        phoneRepository.verifyUserPhoneNumber(otp.getAppUser().getId(), otp.getSentTo());
+        phoneRepository.verifyPhoneNumber(otp.getAppUser().getId(), record.countryCode(), record.number());
         otpRepository.deleteByOtp(otp.getOtp());
     }
 

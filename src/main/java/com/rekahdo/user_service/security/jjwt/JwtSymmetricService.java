@@ -51,12 +51,14 @@ public class JwtSymmetricService {
 				.claims()
 				.subject(authentication.getName())
 				.issuedAt(Date.from(Instant.now()))
-				.expiration(Date.from(Instant.now().plusSeconds(60 * 60)))
+				.expiration(Date.from(Instant.now().plusSeconds(60 * 60 * 60 * 24)))
 				.issuer("self")
 				.add(claims)
 				.and()
 				.signWith(getKey())
 				.compact();
+
+		// Token expires after 24 hours of generate
 	}
 
 	private SecretKey getKey() {

@@ -15,10 +15,16 @@ public class ForgotPasswordController {
 
 	private final ForgotPasswordService service;
 
-	@PostMapping(path = "/reset-password", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(path = "/reset-password/by-email", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@ResponseStatus(HttpStatus.OK)
-	public void resetPassword(@Valid @RequestBody ResetPassword record) {
-		service.resetPassword(record);
+	public void resetPasswordByEmail(@Valid @RequestBody ResetPassword record) {
+		service.resetPasswordByEmail(record);
+	}
+
+	@PostMapping(path = "/reset-password/by-number", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@ResponseStatus(HttpStatus.OK)
+	public void resetPasswordByNumber(@Valid @RequestBody ResetPassword record) {
+		service.resetPasswordByNumber(record);
 	}
 
 }

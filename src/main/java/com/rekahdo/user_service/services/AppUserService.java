@@ -8,6 +8,8 @@ import com.rekahdo.user_service.dtos.records.EditUser;
 import com.rekahdo.user_service.dtos.records.JJwtResponse;
 import com.rekahdo.user_service.dtos.records.Login;
 import com.rekahdo.user_service.entities.AppUser;
+import com.rekahdo.user_service.exceptions.classes.AccountExistsException;
+import com.rekahdo.user_service.exceptions.classes.AccountNotVerifiedException;
 import com.rekahdo.user_service.exceptions.classes.UserNotFoundException;
 import com.rekahdo.user_service.exceptions.classes.UsernameExistsException;
 import com.rekahdo.user_service.mappers.AppUserMapper;
@@ -20,6 +22,7 @@ import com.rekahdo.user_service.security.jjwt.JwtSymmetricService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJacksonValue;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,8 +30,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Objects;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -51,8 +56,18 @@ public class AppUserService {
     private final JwtSymmetricService jwtService;
 
     public void createUser(CreateUser record) {
-        if(repository.existsByUsernameIgnoreCase(record.username()))
-            throw new UsernameExistsException(record.username());
+        String username = record.username(), email = record.email();
+        List<AppUser> appUsers = repository.findByUsernameIgnoreCaseOrEmailIgnoreCase(username, email);
+        appUsers.forEach(appUser -> {
+            if(Objects.equals(email, appUser.getEmail()) && appUser.isVerified())
+                throw new AccountExistsException(email);
+
+            if(Objects.equals(email, appUser.getEmail()))
+                throw new AccountNotVerifiedException(email);
+
+            if(Objects.equals(username, appUser.getEmail()))
+                throw new UsernameExistsException(record.username());
+        });
 
         AppUser user = createUserMapper.toEntity(record);
         user.setPassword(passwordEncoder.encode(record.password()));

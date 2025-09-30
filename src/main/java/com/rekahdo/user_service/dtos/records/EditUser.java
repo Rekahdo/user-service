@@ -15,5 +15,4 @@ public record EditUser(
 
         @Email
         String email
-
 ) implements Dto {}

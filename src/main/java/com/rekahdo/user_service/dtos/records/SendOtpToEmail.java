@@ -6,9 +6,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 
 public record SendOtpToEmail(
-        @NotNull(message = "'userId' can not be null")
-        Long userId,
-
         @NotNull(message = "'email' can not be null")
         @Email
         String email,
